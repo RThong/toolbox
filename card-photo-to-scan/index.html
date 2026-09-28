@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>证件照片转扫描件</title>
+    <meta name="description" content="把卡片证件的正反面照片排成实际尺寸的 A4 扫描件 PDF，照片只在浏览器里处理。" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect x=%223%22 y=%228%22 width=%2226%22 height=%2216.4%22 rx=%221.6%22 fill=%22%23fff%22 stroke=%22%23c0392b%22 stroke-width=%222%22/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="home" href="../">toolbox</a>
+      <h1>证件照片转扫描件</h1>
+      <p class="lede">
+        把在留卡、身份证、驾照这类卡片的正反面照片，排成实际尺寸（85.6 × 54 mm）的 A4 扫描件 PDF。
+        照片只在这个页面里处理，不会上传到任何地方。
+      </p>
+    </header>
+
+    <main class="work">
+      <section class="paper-col" aria-label="A4 打印预览">
+        <div class="sheet">
+          <button class="slot" type="button" data-side="0">
+            <canvas hidden></canvas>
+            <span class="slot-empty">正面照片<small>拖到这里，或点击选择</small></span>
+            <span class="slot-busy" aria-hidden="true">正在识别…</span>
+          </button>
+          <button class="slot" type="button" data-side="1">
+            <canvas hidden></canvas>
+            <span class="slot-empty">背面照片<small>拖到这里，或点击选择</small></span>
+            <span class="slot-busy" aria-hidden="true">正在识别…</span>
+          </button>
+        </div>
+        <div class="actions">
+          <button class="primary" id="download" type="button" disabled>下载 PDF</button>
+          <p class="status" id="status" role="status"></p>
+        </div>
+        <p class="print-note">打印时选「实际大小 / 100%」，不要选「适合页面」。</p>
+      </section>
+
+      <section class="editor" aria-label="调整四角">
+        <p class="editor-empty" id="editor-empty">放进照片后，这里会显示原图和找到的四个角。</p>
+        <div id="editor" hidden>
+          <div class="editor-head">
+            <h2 id="editor-title">正面</h2>
+            <span class="editor-actions">
+              <button class="link" id="rotate" type="button">旋转 90°</button>
+              <button class="link" id="replace" type="button">换一张照片</button>
+            </span>
+          </div>
+          <div class="stage" id="stage">
+            <img id="photo" alt="" />
+            <svg id="overlay" role="group" aria-label="卡片四角"><polygon id="quad" aria-hidden="true" /></svg>
+          </div>
+          <p class="warn" id="warn" role="alert" hidden></p>
+          <p class="hint">
+            四角没对准时，拖动红点到卡片的角上（也可以用 Tab 选中红点、方向键微调）。
+          </p>
+          <label class="check"><input type="checkbox" id="snap" checked /> 松手后自动贴到卡片边缘</label>
+        </div>
+      </section>
+    </main>
+
+    <input type="file" id="file" accept="image/*" hidden />
+    <script type="module" src="./app.ts"></script>
+  </body>
+</html>

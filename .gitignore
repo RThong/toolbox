@@ -5,3 +5,9 @@ node_modules/
 *.jpeg
 *.png
 *.heic
+dist/
+*.webp
+*.avif
+*.tif
+*.tiff
+*.heif

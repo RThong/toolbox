@@ -4,11 +4,13 @@
   "type": "module",
   "scripts": {
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "bun build.ts",
+    "preview": "bun build.ts && bun serve.ts"
   },
   "dependencies": {
-    "pdf-lib": "^1.17.1",
-    "sharp": "^0.35.5"
+    "onnxruntime-web": "^1.30.0",
+    "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2",

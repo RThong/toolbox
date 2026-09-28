@@ -1,0 +1,401 @@
+/* 复印机玻璃板的冷灰蓝作桌面,纸永远是白的(它就是打印预览);唯一强调色是印泥的朱红 */
+:root {
+  --desk: #dfe5ea;
+  --paper: #ffffff;
+  --ink: #1f2a36;
+  --muted: #56636f;
+  --line: #b9c3cc;
+  --shu: #c0392b;
+  --shu-ink: #ffffff;
+  --warn-bg: #fbe9e6;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --desk: #1b2229;
+    --ink: #e3e8ed;
+    --muted: #9aa6b1;
+    --line: #56626d;
+    --shu: #e0584a;
+    --warn-bg: #3a2522;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--desk);
+  color: var(--ink);
+  font: 15px/1.7 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, sans-serif;
+}
+
+.top {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px 8px;
+}
+
+.home {
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.home:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  margin: 4px 0 8px;
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.lede {
+  max-width: 38em;
+  margin: 0;
+  color: var(--muted);
+}
+
+.work {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 24px 64px;
+  display: grid;
+  grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+/* 整页唯一的阴影:像放在玻璃板上的一张纸 */
+
+.sheet {
+  position: relative;
+  aspect-ratio: 210 / 297;
+  background: var(--paper);
+  box-shadow:
+    0 1px 2px rgb(20 30 40 / 0.1),
+    0 16px 40px rgb(20 30 40 / 0.14);
+}
+
+/* 位置与尺寸按毫米换算:左右居中 (210−85.6)/2,正面上沿 20%、背面 55% */
+.slot {
+  position: absolute;
+  left: 29.619%;
+  width: 40.762%;
+  height: 18.182%;
+  padding: 0;
+  border: 1.5px dashed #9aa6b1;
+  border-radius: 3.7% / 5.9%;
+  background: transparent;
+  color: #56636f;
+  font: inherit;
+  cursor: pointer;
+}
+
+.slot[data-side='0'] {
+  top: 20%;
+}
+
+.slot[data-side='1'] {
+  top: 55%;
+}
+
+.slot:hover,
+.slot.over {
+  border-color: var(--shu);
+  color: var(--shu);
+}
+
+.slot.filled {
+  border: 0;
+}
+
+.slot canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* 显式写 display 会盖掉 [hidden],空位上的 300×150 默认画布会把提示文字挤出框 */
+.slot.filled canvas {
+  display: block;
+}
+
+.slot canvas[hidden] {
+  display: none;
+}
+
+.slot.filled .slot-empty {
+  display: none;
+}
+
+.slot-empty {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 识别中盖一层:模型没下完时照片放进来要等,不能让用户以为没反应 */
+.slot-busy {
+  display: none;
+  position: absolute;
+  inset: 0;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  border-radius: inherit;
+  background: rgb(255 255 255 / 0.88);
+  color: #56636f;
+  font-size: 14px;
+}
+
+.slot.busy .slot-busy {
+  display: grid;
+}
+
+.slot.busy .slot-empty {
+  visibility: hidden;
+}
+
+.slot-busy::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #b9c3cc;
+  border-top-color: var(--shu);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot-busy::before {
+    animation: none;
+  }
+}
+
+.slot-empty small {
+  font-size: 12px;
+  color: #8a96a1;
+}
+
+.slot.active {
+  outline: 2px solid #1f2a36;
+  outline-offset: 3px;
+}
+
+.slot:focus-visible {
+  outline: 2px solid var(--shu);
+  outline-offset: 3px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.primary {
+  flex: none;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--shu);
+  color: var(--shu-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  background: var(--line);
+  cursor: not-allowed;
+}
+
+.primary:focus-visible,
+.link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.status {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.print-note {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.editor-empty {
+  margin: 0;
+  padding: 48px 0;
+  color: var(--muted);
+}
+
+.editor-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.stage {
+  position: relative;
+  line-height: 0;
+}
+
+.stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.stage svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#quad {
+  fill: rgb(192 57 43 / 0.08);
+  stroke: var(--shu);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.handle {
+  fill: var(--shu);
+  stroke: #fff;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  cursor: grab;
+  touch-action: none;
+}
+
+.handle.dragging {
+  cursor: grabbing;
+  fill-opacity: 0.6;
+}
+
+.handle:focus {
+  outline: none;
+}
+
+.handle:focus-visible {
+  stroke: var(--ink);
+  stroke-width: 4px;
+}
+
+.warn {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--warn-bg);
+  font-size: 14px;
+}
+
+.hint {
+  margin: 12px 0 4px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.check {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.check input {
+  accent-color: var(--shu);
+}
+
+@media (max-width: 760px) {
+  .top {
+    padding: 24px 16px 0;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .work {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding: 20px 16px 48px;
+  }
+
+  .sheet {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+.tools {
+  display: block;
+}
+
+.tool-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tool-list a {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+.tool-list p {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
